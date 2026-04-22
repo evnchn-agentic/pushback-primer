@@ -1,0 +1,5 @@
+target,prompt,n,green,amber,red,green_rate,red_rate,avg_score,target_cost,judge_cost,errors
+deepseek/deepseek-chat,premise_check,99,99,0,0,1.0,0.0,2.0,0.04382,0.66074,1
+deepseek/deepseek-chat,baseline_empty,99,8,5,86,0.081,0.869,0.212,0.06781,0.71583,1
+qwen/qwen3-235b-a22b,premise_check,98,97,0,1,0.99,0.01,1.98,0.15654,0.69982,1
+qwen/qwen3-235b-a22b,baseline_empty,99,9,14,76,0.091,0.768,0.323,0.44543,0.72719,1

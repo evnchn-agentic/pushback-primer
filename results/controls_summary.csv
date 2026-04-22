@@ -1,0 +1,5 @@
+target,prompt,n,answered_ok,false_positive,ok_rate,fp_rate
+deepseek/deepseek-chat,baseline_empty,15,15,0,1.0,0.0
+deepseek/deepseek-chat,premise_check,15,15,0,1.0,0.0
+qwen/qwen3-235b-a22b,baseline_empty,15,15,0,1.0,0.0
+qwen/qwen3-235b-a22b,premise_check,15,15,0,1.0,0.0

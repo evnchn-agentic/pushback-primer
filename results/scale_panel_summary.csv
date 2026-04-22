@@ -1,0 +1,5 @@
+target,prompt,n,primary_green,primary_avg,helper_green,helper_avg,panel_avg,panel_green,panel_amber,panel_red,panel_green_rate,panel_red_rate,agreement_rate
+deepseek/deepseek-chat,baseline_empty,99,8,0.212,4,0.182,0.197,8,3,88,0.081,0.889,0.909
+deepseek/deepseek-chat,premise_check,99,99,2.0,93,1.939,1.97,99,0,0,1.0,0.0,0.939
+qwen/qwen3-235b-a22b,baseline_empty,99,9,0.323,4,0.192,0.258,8,7,84,0.081,0.848,0.859
+qwen/qwen3-235b-a22b,premise_check,98,97,1.98,90,1.918,1.949,97,1,0,0.99,0.0,0.908
