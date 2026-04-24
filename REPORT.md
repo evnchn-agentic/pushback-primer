@@ -176,3 +176,50 @@ gap it exposes between Anthropic and non-Anthropic models is not a capability
 gap; it's a *default-behavior* gap, and it closes instantly with a system
 prompt. This should inform both how the benchmark's findings get quoted and
 how production systems consuming non-Anthropic models should be configured.
+
+---
+
+## Addendum — 2026-04-24: HKUST student-track validation
+
+After the original 2026-04-23 scale run, we revalidated the prompt on the
+exact free models an HKUST student can reach via
+[openwebui.hkust.edu.hk](https://openwebui.hkust.edu.hk/) — `llama33-70b`
+and `deepseek-chat`. Two routes tested to isolate prompt effect from
+provider variance:
+
+- **Requesty → Nebius / DeepSeek** (clean third-party API lane)
+- **HKUST Open WebUI → same weights** (the production path a student hits)
+
+Judge: `google/gemini-3-flash-preview` via Requesty, single judge,
+`DEFAULT_JUDGE_*_NO_HINT` prompts unchanged. Same 100 v2 questions, n=100 per
+cell.
+
+| Route | Target | Baseline | `premise_check` |
+|---|---|---|---|
+| Requesty | `deepseek/deepseek-chat` | 29% green | **100% green, avg 2.00** |
+| Requesty/Nebius | `Llama-3.3-70B-Instruct` | 35% green | **100% green, avg 2.00** |
+| HKUST Open WebUI | `llama33-70b` (free) | 31% green | **98% green, avg 1.97** |
+
+Two findings:
+
+1. **The prompt works through the production serving stack.** HKUST-direct
+   Llama 3.3 agrees with Requesty/Nebius Llama 3.3 within 2 percentage points
+   at both conditions — the 2-pp delta is judge noise on the same weights.
+   The prompt is not sensitive to serving-stack quirks, prompt templating
+   differences, or whatever sampling defaults HKUST sets.
+2. **Agentic Learning is API-key-free for HKUST students.** A student with
+   their institutional Open WebUI account can paste `premise_check` into the
+   system prompt of a `llama33-70b` chat and get behaviour that **exceeds the
+   unprompted rank-1 Claude Sonnet 4.6** on the same benchmark — at zero
+   incremental cost.
+
+Judge-calibration note: Gemini 3 Flash Preview is more lenient on baseline
+scoring than the canonical 3-judge mean (29% vs 4% on DeepSeek-chat baseline
+in our measurement), but all judges agree tightly on primed outcomes (98–100%
+green). The *delta* is the transferable claim, not the absolute.
+
+Cost: $0.92 Requesty total for the three 100-Q scale runs; zero OpenAI/
+Anthropic spend. HKUST calls cost the student nothing (free tier).
+
+Artifacts live on the companion fork:
+[evnchn/bullshit-benchmark/tree/main/data/v2/primed](https://github.com/evnchn/bullshit-benchmark/tree/main/data/v2/primed).
