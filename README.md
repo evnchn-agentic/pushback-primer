@@ -1,4 +1,4 @@
-# bsbench-prompt-lift
+# pushback-primer
 
 > *Part of [evnchn-agentic](https://github.com/evnchn-agentic). Built for the **Agentic Learning** pillar — where pushback is the whole product.*
 
