@@ -49,7 +49,7 @@ qwen/qwen3-235b-a22b   baseline_empty  15        15          0 (0%)
 qwen/qwen3-235b-a22b   premise_check   15        15          0 (0%)
 ```
 
-**Zero false positives on both targets with `premise_check`.** The prompt does not induce unhelpful refusals on legitimate questions in the tested slice. Pure win.
+**Zero false positives on both targets with `premise_check` in this run, but it did not reproduce.** A 2026-10-31 re-run through a different provider had Qwen3-235B call 6–7 of these 15 legitimate questions fabricated (3 runs), and a harder control set shows the prompt labels real cross-field methods and post-cutoff events as fake. See the [REPORT addendum](REPORT.md#addendum--2026-10-31-the-false-positive-check-does-not-hold-up).
 
 ## The winning prompt
 
@@ -109,7 +109,7 @@ Questions come from `questions.v2.json` in the upstream repo. Results in [`resul
 ## Caveats
 
 - **Judge proxy, not panel.** Our two-judge mean is a proxy for the canonical three-judge mean (Sonnet-4.6 + GPT-5.2 + Gemini-3.1-Pro). Absolute green rates may shift a few points under the official panel; the *delta* from baseline to prompted is 92 points and orders-of-magnitude robust.
-- **Control set is small** (15 hand-crafted items). Zero false positives across two targets and two prompts is a strong initial signal but not proof against adversarial framings.
+- **Control set is small** (15 hand-crafted items), and its zero false positives did not reproduce on another provider. Real cross-field questions and post-cutoff events are where `premise_check` misfires (REPORT addendum, 2026-10-31).
 - **Single run per cell.** No temperature/seed variance probed.
 - **Closed-weight targets not tested** — `gpt-4o-mini`, `gemini-2.5-flash` etc. were blocked by OpenRouter ToS on this key. Expectation is that the same prompt lift applies.
 

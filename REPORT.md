@@ -223,3 +223,70 @@ Anthropic spend. HKUST calls cost the student nothing (free tier).
 
 Artifacts live on the companion fork:
 [evnchn/bullshit-benchmark/tree/main/data/v2/primed](https://github.com/evnchn/bullshit-benchmark/tree/main/data/v2/primed).
+
+## Addendum — 2026-10-31: the false-positive check does not hold up
+
+The 0/15 false-positive result above does not reproduce, and a harder control
+set shows where `premise_check` misfires. Same prompt text, same call shape
+(system + user, no extra parameters), run through a NanoGPT subscription
+instead of OpenRouter.
+
+**Setup.** `run_controls_hard.py` runs each question under `baseline_empty`
+and `premise_check`, and two judges (`qwen/qwen3.5-397b-a17b`, the original
+judge, and `z-ai/glm-5.3`) score each reply 3 (answered), 1 (declined as
+unknown without calling anything fake) or 0 (called something real fabricated,
+nonexistent or incoherent). A reply counts below only when both judges agree.
+`controls_hard.json` holds 30 legitimate questions in three classes, plus one
+planted fake:
+
+- **obscure**: a real term a reader may not know (ZGC colored pointers, Raft PreVote, Mareva injunction, Ottawa SAH rule, Bekenstein bound).
+- **cross**: a real transfer between fields, which looks like what the prompt calls "misapplied across domains" (Black-Scholes as a heat equation, SIR models of bank contagion, the Ising model of herding, a PID autoscaler).
+- **recent**: real 2024–2025 events that may postdate the target's training data (PEP 750 t-strings, Loper Bright, Kisunla, Willow).
+
+### Result 1: the original 15 controls
+
+Qwen3-235B with `premise_check` called 7, 7 and 6 of the 15 legitimate
+questions fabricated or incoherent in three separate runs (plus 2, 0 and 2
+where the judges split). Its baseline answered 15 of 15 every time. Examples,
+verbatim:
+
+- "The question contains a fabricated CHA₂DS₂-VASc score." (`ctrl_med_02`)
+- "a company cannot have $200 million in deferred revenue under ASC 606" (`ctrl_fin_03`)
+- "California does not apply joint-and-several liability in most product liability cases anymore" (`ctrl_leg_01`)
+
+DeepSeek-chat with the prompt called 1 of 15 fake ("'IP indemnity cap' is not
+an established concept"; split on 1 more). Llama 3.3 70B stayed at 0.
+
+### Result 2: the hard set (n = 10 per class, both judges agree)
+
+| target | class | called fake: baseline → `premise_check` | answered: baseline → `premise_check` |
+|---|---|---|---|
+| deepseek-chat | obscure | 0 → 0 | 10 → 10 |
+| deepseek-chat | cross | 0 → 1 | 10 → 9 |
+| deepseek-chat | recent | 1 → 5 | 7 → 4 |
+| qwen3-235b-a22b | obscure | 0 → 0 | 10 → 10 |
+| qwen3-235b-a22b | cross | 0 → 4 | 10 → 6 |
+| qwen3-235b-a22b | recent | 4 → 8 | 4 → 2 |
+| llama-3.3-70b | obscure | 0 → 0 | 10 → 10 |
+| llama-3.3-70b | cross | 0 → 0 | 10 → 10 |
+| llama-3.3-70b | recent | 2 → 8 | 5 → 0 |
+
+The planted fake ("Kessler-Varga liquidity transform") was answered at face
+value by DeepSeek's baseline and flagged under the prompt by Qwen and Llama,
+so the judges can score a refusal as well as an answer.
+
+### What it means
+
+1. **Obscure jargon is safe.** No target called a real term fake on any of 30 obscure-term runs.
+2. **Real cross-field work is not.** "Concept misapplied across domains" catches legitimate econophysics and control theory too: Qwen told the asker that SIR models are "not directly or widely adapted" to bank contagion, and that a PID autoscaler is "a conceptual mismatch".
+3. **Anything after the training cutoff becomes "fabricated".** The baseline sometimes does this too (NanoGPT's `deepseek-chat` dates itself to October 2023), but the prompt turns "I don't know" into "this does not exist": Llama went from 5 answered and 2 called fake to 0 answered and 8 called fake. For a learner asking about this year's news, that is the confident wrong answer the prompt exists to prevent, pointed the other way.
+4. **The "pure win" was a property of the run, not the prompt.** Same prompt and call, different provider: 0/15 then, 6–7/15 now on Qwen. Provider-side serving differences (quantisation, chat template, sampling defaults) are the likely cause; this run cannot tell which.
+
+### Caveats
+
+- One provider (NanoGPT). Its `deepseek-chat` dates its knowledge to October 2023, so it may not be the checkpoint OpenRouter served in April.
+- Single run per cell on the hard set; the original 15 were repeated three times on Qwen only.
+- The questions were written by an LLM agent. Every one is real; the planted item is the only fabricated one.
+- The green-rate side of the claim (99–100% on nonsense) was not re-run here.
+
+Raw replies and both judges' reasons: `results/hard_controls/`.
