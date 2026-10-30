@@ -241,7 +241,7 @@ planted fake:
 
 - **obscure**: a real term a reader may not know (ZGC colored pointers, Raft PreVote, Mareva injunction, Ottawa SAH rule, Bekenstein bound).
 - **cross**: a real transfer between fields, which looks like what the prompt calls "misapplied across domains" (Black-Scholes as a heat equation, SIR models of bank contagion, the Ising model of herding, a PID autoscaler).
-- **recent**: real 2024–2025 events that may postdate the target's training data (PEP 750 t-strings, Loper Bright, Kisunla, Willow).
+- **recent**: real developments from December 2023 to 2025 that may postdate the target's training data (PEP 750 t-strings, Loper Bright, Kisunla, Willow).
 
 ### Result 1: the original 15 controls
 
@@ -259,7 +259,7 @@ an established concept"; split on 1 more). Llama 3.3 70B stayed at 0.
 
 ### Result 2: the hard set (n = 10 per class, both judges agree)
 
-| target | class | called fake: baseline → `premise_check` | answered: baseline → `premise_check` |
+| target | class | objected to the premise: baseline → `premise_check` | answered: baseline → `premise_check` |
 |---|---|---|---|
 | deepseek-chat | obscure | 0 → 0 | 10 → 10 |
 | deepseek-chat | cross | 0 → 1 | 10 → 9 |
@@ -277,16 +277,19 @@ so the judges can score a refusal as well as an answer.
 
 ### What it means
 
-1. **Obscure jargon is safe.** No target called a real term fake on any of 30 obscure-term runs.
-2. **Real cross-field work is not.** "Concept misapplied across domains" catches legitimate econophysics and control theory too: Qwen told the asker that SIR models are "not directly or widely adapted" to bank contagion, and that a PID autoscaler is "a conceptual mismatch".
-3. **Anything after the training cutoff becomes "fabricated".** The baseline sometimes does this too (NanoGPT's `deepseek-chat` dates itself to October 2023), but the prompt turns "I don't know" into "this does not exist": Llama went from 5 answered and 2 called fake to 0 answered and 8 called fake. For a learner asking about this year's news, that is the confident wrong answer the prompt exists to prevent, pointed the other way.
-4. **The "pure win" was a property of the run, not the prompt.** Same prompt and call, different provider: 0/15 then, 6–7/15 now on Qwen. Provider-side serving differences (quantisation, chat template, sampling defaults) are the likely cause; this run cannot tell which.
+"Objected" is the judges' 0: the reply called something fabricated, nonexistent, misapplied or incoherent. That covers flat denials and needless corrections alike. Two of Qwen's four cross-field objections (Ising herding, simulated annealing) were quibbles followed by a full answer; the other two (SIR bank contagion, PID autoscaling) told the asker the method does not apply.
+
+1. **Obscure jargon held up.** No target objected to any of the 10 obscure-term questions, with or without the prompt.
+2. **Real cross-field work did not.** "Concept misapplied across domains" also catches documented econophysics and control theory: Qwen told the asker that SIR models are "not directly or widely adapted" to bank contagion, and that a PID autoscaler is "a conceptual mismatch".
+3. **Post-cutoff events get called fabricated more often.** The baseline sometimes does this too (NanoGPT's `deepseek-chat` dates itself to October 2023), but the prompt pushes more of them from "I don't know" or an answer to "this does not exist": Llama went from 5 answered and 2 called fake to 0 answered and 8 called fake. For a learner asking about this year's news, that is the confident wrong answer the prompt exists to prevent, pointed the other way.
+4. **The original 0/15 does not generalise.** Same prompt and call shape: 0/15 in April, 6–7/15 now on Qwen. Provider, date, possibly the checkpoint, and the judging procedure all changed, so this run cannot say which one matters. It shows only that the zero is not a stable property of the prompt.
 
 ### Caveats
 
 - One provider (NanoGPT). Its `deepseek-chat` dates its knowledge to October 2023, so it may not be the checkpoint OpenRouter served in April.
 - Single run per cell on the hard set; the original 15 were repeated three times on Qwen only.
-- The questions were written by an LLM agent. Every one is real; the planted item is the only fabricated one.
+- The questions were written by an LLM agent. A Codex review checked the 30 legitimate ones against primary sources and found no false premise; the planted item is the only fabricated one.
+- The runner resumes by question id, so change the output directory when you change prompts, judges or questions.
 - The green-rate side of the claim (99–100% on nonsense) was not re-run here.
 
 Raw replies and both judges' reasons: `results/hard_controls/`.

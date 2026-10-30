@@ -49,7 +49,7 @@ qwen/qwen3-235b-a22b   baseline_empty  15        15          0 (0%)
 qwen/qwen3-235b-a22b   premise_check   15        15          0 (0%)
 ```
 
-**Zero false positives on both targets with `premise_check` in this run, but it did not reproduce.** A 2026-10-31 re-run through a different provider had Qwen3-235B call 6–7 of these 15 legitimate questions fabricated (3 runs), and a harder control set shows the prompt labels real cross-field methods and post-cutoff events as fake. See the [REPORT addendum](REPORT.md#addendum--2026-10-31-the-false-positive-check-does-not-hold-up).
+**Zero false positives on both targets with `premise_check` in this run, but it did not reproduce.** A 2026-10-31 re-run through a different provider had Qwen3-235B call 6–7 of these 15 legitimate questions fabricated (3 runs), and on a harder control set the prompt objected to real cross-field methods and called post-cutoff events fabricated more often than the baseline did. See the [REPORT addendum](REPORT.md#addendum--2026-10-31-the-false-positive-check-does-not-hold-up).
 
 ## The winning prompt
 

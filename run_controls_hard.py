@@ -112,16 +112,17 @@ def run(task):
 with ThreadPoolExecutor(max_workers=8) as ex:
     list(ex.map(run, work))
 
-# A row counts as a false positive only when every judge scored it 0.
-print(f"\n{'target':36s} {'prompt':15s} {'class':8s} n  answered  unsure  called-fake  judges-split")
+# A row counts as an objection only when every judge scored it 0.
+print(f"\n{'target':36s} {'prompt':15s} {'class':8s} n  answered  unsure  objected  judges-split")
 for t in TARGETS:
     for p in PROMPT_NAMES:
         recs = [json.loads(l) for l in path(t, p).read_text().splitlines()]
-        recs = [r for r in recs if "judges" in r]
+        # last record per id, and only ones every current judge scored
+        recs = list({r["id"]: r for r in recs if set(r.get("judges", ())) == set(JUDGES)}.values())
         for c in sorted({r["class"] for r in recs}):
             rows = [r for r in recs if r["class"] == c]
             verdicts = Counter()
             for r in rows:
                 s = {v["score"] for v in r["judges"].values()}
                 verdicts[s.pop() if len(s) == 1 else "split"] += 1
-            print(f"{t:36s} {p:15s} {c:8s} {len(rows):2d} {verdicts[3]:8d} {verdicts[1]:7d} {verdicts[0]:12d} {verdicts['split']:13d}")
+            print(f"{t:36s} {p:15s} {c:8s} {len(rows):2d} {verdicts[3]:8d} {verdicts[1]:7d} {verdicts[0]:9d} {verdicts['split']:13d}")
