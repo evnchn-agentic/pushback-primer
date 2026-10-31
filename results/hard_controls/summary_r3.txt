@@ -1,0 +1,11 @@
+target                               prompt          class    n  answered  unsure  objected  judges-split
+qwen/qwen3-235b-a22b                 baseline_empty  finance   3        3       0         0             0
+qwen/qwen3-235b-a22b                 baseline_empty  legal     3        3       0         0             0
+qwen/qwen3-235b-a22b                 baseline_empty  medical   3        3       0         0             0
+qwen/qwen3-235b-a22b                 baseline_empty  physics   2        2       0         0             0
+qwen/qwen3-235b-a22b                 baseline_empty  software  4        4       0         0             0
+qwen/qwen3-235b-a22b                 premise_check   finance   3        2       0         1             0
+qwen/qwen3-235b-a22b                 premise_check   legal     3        1       0         2             0
+qwen/qwen3-235b-a22b                 premise_check   medical   3        2       0         1             0
+qwen/qwen3-235b-a22b                 premise_check   physics   2        2       0         0             0
+qwen/qwen3-235b-a22b                 premise_check   software  4        0       0         2             2
